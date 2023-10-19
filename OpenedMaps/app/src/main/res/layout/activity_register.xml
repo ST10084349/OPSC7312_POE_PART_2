@@ -50,6 +50,7 @@
       android:inputType="textEmailAddress"
       android:minHeight="48dp"
       android:textColorHint="@android:color/white"
+      android:textColor="@color/white"
       android:autofillHints=""
       android:paddingTop="55dp"
       tools:ignore="VisualLintTextFieldSize" />
@@ -69,6 +70,7 @@
       android:inputType="textPassword"
       android:minHeight="48dp"
       android:textColorHint="@android:color/white"
+      android:textColor="@color/white"
       android:autofillHints=""
       tools:ignore="VisualLintTextFieldSize" />
 
@@ -98,6 +100,7 @@
       android:layout_weight="1"
       android:hint="@string/confirm_password"
       android:inputType="textPassword"
+      android:textColor="@color/white"
       android:textColorHint="@android:color/white"
       tools:ignore="TouchTargetSizeCheck,VisualLintTextFieldSize"
       android:autofillHints="" />
