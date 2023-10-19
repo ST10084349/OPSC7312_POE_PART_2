@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:orientation="vertical"
+    android:background="@drawable/map">
+
+    <org.osmdroid.views.MapView
+        android:id="@+id/mapView"
+        android:layout_width="match_parent"
+        android:layout_height="650dp" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:layout_gravity="center">
+
+        <Button
+            android:id="@+id/viewHotspotsButton"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="@string/view_hotspots"
+            android:layout_gravity="center"
+            android:layout_marginEnd="140dp"
+            tools:ignore="ButtonStyle" />
+
+        <Button
+            android:id="@+id/showRoutesButton"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="@string/show_route"
+            android:layout_gravity="center"
+            tools:ignore="ButtonStyle" />
+
+    </LinearLayout>
+
+</LinearLayout>
