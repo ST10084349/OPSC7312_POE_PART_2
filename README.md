@@ -10,6 +10,20 @@ Hi there, I'm Syuren Chetty
    Cell - 083 691 1431
    Email - syuren187@gmail.com /St10084726@vcconnect.edu.za
 ```
+```bash
+- 👋 Hi, I’m Darius Lynton Paul
+- 🌱 I’m currently learning Application Development
+- 📫 How to reach me :
+  e-mail: dariuslpaul@gmail.com , ST10084349@vcconnect.edu.za
+  Cell: 074 250 4390
+```
+```bash
+- Hello there, my name is Nicholas Caleb Shunmugam 
+- I’m currently studying software engineering 
+- How to reach me:
+Email: nicholas15caleb@gmail.com, ST10084286@vcconnect.edu.za
+Contact number: 0636825485
+```
 If you have any problems with this application, please email either one of us and we will gladly assist you with your problem.
 
 ## Features
