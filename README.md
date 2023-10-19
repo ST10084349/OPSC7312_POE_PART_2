@@ -68,7 +68,7 @@ We're continuously working to improve WingWatch. Here are some upcoming features
 [MIT](https://choosealicense.com/licenses/mit/)
 
 ## Kanban
-Link: https://github.com/users/ST10084726/projects/9/views/1
+Link: https://github.com/users/ST10084726/projects/13
 
 ## Github
 Link: https://github.com/ST10084349/OPSC7312_POE_PART_2
