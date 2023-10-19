@@ -40,6 +40,7 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.IMyLocationConsumer
 import org.osmdroid.views.overlay.mylocation.IMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
+import kotlin.math.pow
 
 
 class MainActivity : AppCompatActivity(), IMyLocationProvider, MapListener, GpsStatus.Listener {
@@ -143,8 +144,11 @@ class MainActivity : AppCompatActivity(), IMyLocationProvider, MapListener, GpsS
 
         //add on onclicklistener to the button
         viewHotspotsButton.setOnClickListener {
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+            val isMetric = sharedPreferences.getBoolean("isMetric", true)
+            val maxDistance = sharedPreferences.getInt("maxDistance", 50)
             //call a function to add hotspot markers when the button is clicked
-            addHotspotMarkers()
+            addHotspotMarkers(maxDistance, isMetric)
         }
 
         val showRoutesButton = findViewById<Button>(R.id.showRoutesButton)
@@ -247,51 +251,84 @@ class MainActivity : AppCompatActivity(), IMyLocationProvider, MapListener, GpsS
         mapView.overlays.add(icLocationMarker)
     }
 
-    private fun addHotspotMarkers(){
+    private fun addHotspotMarkers(maxDistance: Int, isMetric: Boolean){
         //clear any existing hotspot markers from the map
         mapView.overlays.removeAll(hotspotMarkers)
 
         for ((name, location) in hotspotsLocations){
-            val marker = Marker(mapView)
-            marker.position = location
-            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-            marker.icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_location, null)
+            // Calculate the distance between user location and hotspot
+            val distance = calculateDistance(latitude, longitude, location.latitude, location.longitude, isMetric)
 
-            // create a custom dialog for displaying location name and adding a note
-            marker.setOnMarkerClickListener { marker, mapView ->
-                val dialog = Dialog(this@MainActivity)
-                dialog.setContentView(R.layout.custom_marker_dialog)
+            if (distance <= maxDistance) {
+                val marker = Marker(mapView)
+                marker.position = location
+                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                marker.icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_location, null)
 
-                val noteEditText = dialog.findViewById<EditText>(R.id.noteEditText)
-                val saveNoteButton = dialog.findViewById<Button>(R.id.saveNoteButton)
-                val displayNoteTextView = dialog.findViewById<TextView>(R.id.displayNoteTextView)
+                // create a custom dialog for displaying location name and adding a note
+                marker.setOnMarkerClickListener { marker, mapView ->
+                    val dialog = Dialog(this@MainActivity)
+                    dialog.setContentView(R.layout.custom_marker_dialog)
 
-                //Display the location name
-                val locationNameTextView = dialog.findViewById<TextView>(R.id.locationNameTextView)
+                    val noteEditText = dialog.findViewById<EditText>(R.id.noteEditText)
+                    val saveNoteButton = dialog.findViewById<Button>(R.id.saveNoteButton)
+                    val displayNoteTextView = dialog.findViewById<TextView>(R.id.displayNoteTextView)
 
-                //load and display the saved note for this marker
-                val savedNote = loadNote(marker.position)
-                locationNameTextView.text = savedNote
+                    //Display the location name
+                    val locationNameTextView = dialog.findViewById<TextView>(R.id.locationNameTextView)
 
-                saveNoteButton.setOnClickListener {
-                    val note = noteEditText.text.toString()
-                    saveNote(marker.position, note)
-                    displayNoteTextView.text = note
+                    //load and display the saved note for this marker
+                    val savedNote = loadNote(marker.position)
+                    locationNameTextView.text = savedNote
+
+                    saveNoteButton.setOnClickListener {
+                        val note = noteEditText.text.toString()
+                        saveNote(marker.position, note)
+                        displayNoteTextView.text = note
+                    }
+
+                    dialog.show()
+                    true
                 }
-
-                dialog.show()
-                true
+                hotspotMarkers.add(marker) // Add the marker to the list
             }
-
-            hotspotMarkers.add(marker) // Add the marker to the list
         }
-
         //add the new hotspot markers to the map
         mapView.overlays.addAll(hotspotMarkers)
         mapView.invalidate() //refresh the map to display the new markers
-
-
     }
+
+    private fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double, isMetric: Boolean): Double {
+        val earthRadius: Double
+        if (isMetric) {
+            // Earth radius in kilometers
+            earthRadius = 6371.0
+        } else {
+            // Earth radius in miles
+            earthRadius = 3958.8
+        }
+
+        // Convert latitude and longitude from degrees to radians
+        val lat1Rad = Math.toRadians(lat1)
+        val lon1Rad = Math.toRadians(lon1)
+        val lat2Rad = Math.toRadians(lat2)
+        val lon2Rad = Math.toRadians(lon2)
+
+        // Calculate the change in coordinates
+        val deltaLat = lat2Rad - lat1Rad
+        val deltaLon = lon2Rad - lon1Rad
+
+        // Haversine formula
+        val a = Math.sin(deltaLat / 2).pow(2) + Math.cos(lat1Rad) * Math.cos(lat2Rad) *
+                Math.sin(deltaLon / 2).pow(2)
+        val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+
+        // Calculate the distance
+        val distance = earthRadius * c // Distance in selected units (kilometers or miles)
+
+        return distance
+    }
+
 
     private fun saveNote(location: GeoPoint, note: String) {
         noteMap[location] = note
